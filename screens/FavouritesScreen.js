@@ -1,19 +1,25 @@
 import React from 'react';
-import { Platform } from 'react-native';
-import MealList from '../components/MealList';
+import { View, StyleSheet, Platform } from 'react-native';
 
-import { MEALS } from '../data/dummy-data';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { useSelector } from 'react-redux';
 
+import MealList from '../components/MealList';
 import HeaderButton from '../components/HeaderButton';
-const FavouritesScreen = props => {
-  //filter trough meal, but only show if meal.id is m1 or m2
-  const favMeals = MEALS.filter(meal => meal.id === 'm1' || meal.id === 'm2');
-  return <MealList listData={favMeals} navigation={props.navigation} />;
-};
+import DefaultText from '../components/DefaultText';
 
-FavouritesScreen.navigationOptions = {
-  headerTitle: 'Your Favourites'
+const FavouritesScreen = props => {
+  const favMeals = useSelector(state => state.meals.favouriteMeals);
+
+  if (favMeals.length === 0 || !favMeals) {
+    return (
+      <View style={styles.content}>
+        <DefaultText>No Favourite Meals Added</DefaultText>
+      </View>
+    );
+  }
+
+  return <MealList listData={favMeals} navigation={props.navigation} />;
 };
 
 const hamburgerIcon = Platform.OS === 'android' ? 'md-menu' : 'ios-menu';
@@ -34,5 +40,13 @@ FavouritesScreen.navigationOptions = navData => {
     )
   };
 };
+
+const styles = StyleSheet.create({
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
 
 export default FavouritesScreen;
